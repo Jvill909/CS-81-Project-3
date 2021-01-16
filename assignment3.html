@@ -1,0 +1,148 @@
+<html>
+    <head>
+        <title>CS81 - Assignment 3</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <style>
+            .error { color: red; }
+            .hidden { display:  none; }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h2>Assignment 3</h2>
+            <h3>Instructions</h3>
+            <ul>
+                <li>Create a file assignment3.js and put it in the same folder as this HTML page.</li>
+                <li>Implement a <code>function add(firstName, lastName, isFullTime)</code></li>
+                <li>Implement a <code>function remove(firstName, lastName)</code></li>
+                <li>Call <code>showAll(array)</code> to show an <code>array</code> of employee object on the HTML page</li>
+            </ul>
+            <h2>Employee Management Console</h2>
+            <table>
+                <tr>
+                    <td><h3>Employee</h3></td>
+                    <td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>First Name: </label>
+                    </td>
+                    <td>
+                        <input id="firstName" type="text">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <label id="errFirstName" class="hidden error">Enter a first name</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Last Name: </label>
+                    </td>
+                    <td>
+                        <input id="lastName" type="text">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <label id="errLastName" class="hidden error">Enter a last name</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Full Time: </label>
+                    </td>
+                    <td>
+                        <input id="fullTime" type="checkbox">
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button id="btnAdd">Add</button>
+                    </td>
+                </tr>
+            </table>
+            <ul id="output"></ul>
+        </div>
+        <script type="text/javascript">
+            function isEmpty(val){
+                return (val === undefined || val == null || val.length <= 0) ? true : false;
+            }
+            let readyCheck = setInterval(() => {
+                if (document.readyState !== 'complete') {
+                    return;
+                }
+                clearInterval(readyCheck);
+                onDocumentLoaded();
+            }, 200);
+            function onDocumentLoaded() {
+                let input = document.getElementById("btnAdd");
+                input.addEventListener("click", (event) => {
+                    let errFn = document.getElementById("errFirstName");
+                    errFn.classList.add("hidden");
+                    let firstName = document.getElementById("firstName");
+                    if (isEmpty(firstName.value)) {
+                        errFn.classList.remove("hidden");
+                        return;
+                    }
+                    let errLn = document.getElementById("errLastName")
+                    errLn.classList.add("hidden");
+                    let lastName = document.getElementById("lastName");
+                    if (isEmpty(lastName.value)) {
+                        errLn.classList.remove("hidden");
+                        return;
+                    }
+                    let isFullTime = document.getElementById("fullTime").checked;
+                    add(firstName.value, lastName.value, isFullTime);
+                    firstName.value = "";
+                    lastName.value = "";
+                });
+            }
+            function clear() {
+                let output = document.getElementById("output");
+                output.innerHTML = "";
+            }
+            function showAll(array) {
+                if (!(array instanceof Array)) {
+                    console.log("ERRPR: Must pass array to showAll(..) function!");
+                    return;
+                } 
+                let output = document.getElementById("output");
+                output.innerHTML = "";
+                array.forEach((elem) => {
+                    let ln = "";
+                    let fn = "";
+                    let s = "(";
+                    for (let k in elem) {
+                        if (s.length > 1) {
+                            s += ", ";
+                        }
+                        if (k.toLowerCase() == "firstname") {
+                            fn = elem[k];
+                        } else if (k.toLowerCase() === "lastname") {
+                            ln = elem[k];
+                        }
+                        s += k + "=" + elem[k];
+                    }
+                    s += ")";
+                    let button = document.createElement("button");
+                    button.textContent = "Delete";
+                    button.addEventListener("click", (e) => {
+                        remove(fn, ln);
+                    });
+                    let li = document.createElement("li");
+                    li.appendChild(document.createTextNode(s));
+                    li.appendChild(button);
+                    output.appendChild(li);   
+                });
+            }
+        </script>
+        <script src="assignment3.js"></script>
+    </body>
+</html>
